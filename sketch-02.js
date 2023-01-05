@@ -18,18 +18,18 @@ const sketch = () => {
 
     context.save();
     context.translate(x, y);
-    context.rotate(.3)
+    context.rotate(45 / 180 * Math.PI);
 
     context.beginPath();
     context.rect(-w * .5, -h * .5, w, h);
     context.fill();
     context.restore();
     
-    context.translate(100, 400);
+    // context.translate(100, 400);
 
-    context.beginPath();
-    context.arc(0, 0, 50, 0, Math.PI * 2);
-    context.fill();
+    // context.beginPath();
+    // context.arc(0, 0, 50, 0, Math.PI * 2);
+    // context.fill();
   };
 };
 
