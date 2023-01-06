@@ -1,5 +1,6 @@
 const canvasSketch = require("canvas-sketch");
 const random = require("canvas-sketch-util/random");
+const math = require("canvas-sketch-util/math");
 
 const settings = {
   dimensions: [1080, 1080],
@@ -17,7 +18,7 @@ const settings = {
 const sketch = ({ context, width, height }) => {
   const agents = [];
 
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0; i < 40; i++) {
     const x = random.range(0, width);
     const y = random.range(0, height);
 
@@ -28,10 +29,29 @@ const sketch = ({ context, width, height }) => {
     context.fillStyle = "white";
     context.fillRect(0, 0, width, height);
 
+    for (let i = 0; i < agents.length; i++) {
+      const agent = agents[i];
+
+      for (let j = i + 1; j < agents.length; j++) {
+        const other = agents[j];
+
+        const dist = agent.pos.getDistance(other.pos);
+
+        if (dist > 200) continue;
+
+        context.lineWidth = math.mapRange(dist, 0, 200, 12, 1);
+
+        context.beginPath();
+        context.moveTo(agent.pos.x, agent.pos.y);
+        context.lineTo(other.pos.x, other.pos.y);
+        context.stroke();
+      }
+    }
+
     agents.forEach((agent) => {
       agent.update();
       agent.draw(context);
-      agent.bounce(width, height)
+      agent.bounce(width, height);
     });
   };
 };
@@ -43,6 +63,12 @@ class Vector {
     this.x = x;
     this.y = y;
   }
+
+  getDistance(v) {
+    const dx = this.x - v.x;
+    const dy = this.y - v.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
 }
 
 class Agent {
@@ -53,8 +79,8 @@ class Agent {
   }
 
   bounce(width, height) {
-    if(this.pos.x <= 0 || this.pos.x >= width) this.vel.x *= -1;
-    if(this.pos.y <= 0 || this.pos.y >= height) this.vel.y *= -1;
+    if (this.pos.x <= 0 || this.pos.x >= width) this.vel.x *= -1;
+    if (this.pos.y <= 0 || this.pos.y >= height) this.vel.y *= -1;
   }
 
   update() {
@@ -63,7 +89,7 @@ class Agent {
   }
 
   draw(context) {
-    context.fillStyle = "";
+    // context.fillStyle = "";
 
     context.save();
     context.translate(this.pos.x, this.pos.y);
